@@ -1,8 +1,9 @@
 `timescale 1ns / 1ps
 
 module pe_con#(
-       parameter VECTOR_SIZE = 64, // vector size
-	   parameter L_RAM_SIZE = 6
+       parameter VECTOR_SIZE = 64, // matrix and vector size
+	   parameter L_RAM_SIZE = 12,  // size of RAM on PE_CONTROLLER : we store entire 64*64 matrix on this L_RAM
+	   parameter R_RAM_SIZE = 6    // size of RAM on each PE : we store 64 vector on this R_RAM
     )
     (
         input start,
@@ -23,75 +24,32 @@ module pe_con#(
    // PE
     wire [31:0] ain;
     wire [31:0] din;
-    wire [L_RAM_SIZE-1:0] addr;
+    wire [R_RAM_SIZE-1:0] r_addr; // address of R_RAMs
     wire we_local;
     wire we_global;
     //wire we;
     wire valid;
     wire dvalid;
     wire [31:0] dout;
-    wire [L_RAM_SIZE:0] rdaddr;
+   
+    wire [L_RAM_SIZE:0] rdaddr;  // since we have to read 64*64+64 vals from BRAM, we need 13 bits for addressing
     wire [31:0] rddata;
     
     reg [31:0] wrdata;
     
-    localparam S_IDLE = 4'd0;
-    localparam S_LOAD = 4'd1;
-    localparam S_CALC = 4'd2;
-    localparam S_DONE = 4'd3;
-
-    /********************changed code*****************************/
+    wire [L_RAM_SIZE-1:0] l_addr; // address of L_RAM
     
-    reg [31:0] float_16_in [0:VECTOR_SIZE-1];
-    reg [3:0] state_trans, state_d_trans;
-    localparam S_TRANS = 4'd2;
-    
-    wire t_start_done;
-    wire t_load_done;
-    wire t_trans_done;
-    wire t_done_done;
-    
-    always @(posedge aclk)
-        if (!aresetn)
-            state_trans <= S_IDLE;
-        else
-            case (state_trans)
-                S_IDLE:
-                    state_trans <= (t_start_done)? S_LOAD : S_IDLE;
-                S_LOAD: // LOAD PERAM
-                    state_trans <= (t_load_done)? S_TRANS : S_LOAD;
-                S_TRANS:// Translate from 16 bit to 32 bit
-                    state_trans <= (t_trans_done)? S_DONE : S_TRANS;
-                S_DONE:
-                    state_trans <= (t_done_done)? S_IDLE : S_DONE;
-                default:
-                    state_trans <= S_IDLE;
-            endcase
-        
-    always @(posedge aclk)
-        if (!aresetn)
-            state_d_trans <= S_IDLE;
-        else
-            state_d_trans <= state_d_trans;
-            
-    // S_TRANS
-    always @(posedge aclk) 
-        if(state_trans == S_TRANS && state_d_trans == S_LOAD) begin
-            
-        end
-    
-    /**************************************************************/
     clk_wiz_0 u_clk (.clk_out1(BRAM_CLK), .clk_in1(aclk));
    
-   // global block ram
+   // L_RAM : read first 64*64 vals from BRAM into L_RAM
     reg [31:0] gdout;
-    (* ram_style = "block" *) reg [31:0] globalmem [0:VECTOR_SIZE-1];
+    (* ram_style = "block" *) reg [31:0] globalmem [0:VECTOR_SIZE*VECTOR_SIZE-1]; // since we store entire 64*64 matrix on
+                                                                                  // L_RAM, size should be like this!
     always @(posedge aclk)
-        if (we_global) begin //translation
-            globalmem[addr] <= { rddata[16], {3{rddata[17]}}, rddata[17:21], rddata[22:31], 13'b0};
-        end
+        if (we_global)
+            globalmem[l_addr] <= rddata;
         else
-            gdout <= globalmem[addr];
+            gdout <= globalmem[l_addr];
 
   
 	//FSM
@@ -102,6 +60,11 @@ module pe_con#(
         
     // state register
     reg [3:0] state, state_d;
+    localparam S_IDLE = 4'd0;
+    localparam S_LOAD = 4'd1;
+    localparam S_CALC = 4'd2;
+    localparam S_DONE = 4'd3;
+
 	//part 1: state transition
     always @(posedge aclk)
         if (!aresetn)
@@ -127,11 +90,14 @@ module pe_con#(
             state_d <= state;
 
 	//part 2: determine state
-    // S_LOAD
+    // S_LOAD : 1. Load 64 * 64 vals from BRAM to L_RAM 
+    //          2. LOAD 64 vals from BRAM to R_RAMS
     reg load_flag;
     wire load_flag_reset = !aresetn || load_done;
     wire load_flag_en = (state_d == S_IDLE) && (state == S_LOAD);
-    localparam CNTLOAD1 = (4*VECTOR_SIZE) -1;
+    // CNTLOAD1 : We need to count until 64*64+64 vals are all loaded onto local RAMs. 
+    // We multiply 2, 1 cycle for reading val from BRAM and the other for writing the val to RAM.
+    localparam CNTLOAD1 = (VECTOR_SIZE * VECTOR_SIZE + VECTOR_SIZE) * 2 - 1; 
     always @(posedge aclk)
         if (load_flag_reset)
             load_flag <= 'd0;
@@ -189,8 +155,12 @@ module pe_con#(
     
     //part3: update output and internal register
     //S_LOAD: we
-	assign we_local = (load_flag && counter[L_RAM_SIZE+1] && !counter[0]) ? 'd1 : 'd0;
-	assign we_global = (load_flag && !counter[L_RAM_SIZE+1] && !counter[0]) ? 'd1 : 'd0;
+    
+    // we_local : we have to start writing vals to R_RAMs when there are only 64 vals left to copy
+	assign we_local = (load_flag && (counter < VECTOR_SIZE * 2) && !counter[0]) ? 'd1 : 'd0;
+	
+    // we_global : we have to continue writing vals to L_RAM until only 64 vals left to copy
+	assign we_global = (load_flag && (counter >= VECTOR_SIZE * 2) && !counter[0]) ? 'd1 : 'd0;
 	
 	//S_CALC: wrdata 
    always @(posedge aclk)
@@ -224,13 +194,19 @@ module pe_con#(
 	//S_CALC: ain
 	assign ain = (calc_flag)? gdout : 'd0;
 
-	//S_LOAD&&CALC
-    assign addr = (load_flag)? counter[L_RAM_SIZE:1]:
-                  (calc_flag)? counter[L_RAM_SIZE-1:0]: 'd0;
+	//S_LOAD : get r_addr and l_addr
+    // r_addr => S_LOAD : 63 - (counter / 2)
+    assign r_addr = (load_flag)? ((counter < VECTOR_SIZE*2)? (VECTOR_SIZE-1) - (counter/2) : 'd0):
+                    (calc_flag)? counter[L_RAM_SIZE-1:0]: 'd0;
+    
+    // l_addr => S_LOAD : 4159 - (counter / 2)
+    assign l_addr = (load_flag)? (VECTOR_SIZE*VECTOR_SIZE+VECTOR_SIZE-1) - (counter/2) :
+                     'd0; 
 
 	//S_LOAD
 	assign din = (load_flag)? rddata : 'd0;
-    assign rdaddr = (state == S_LOAD)? counter[L_RAM_SIZE+1:1] : 'd0;
+    // rdaddr = 4159 - (counter / 2)
+    assign rdaddr = (state == S_LOAD)? (VECTOR_SIZE*VECTOR_SIZE+VECTOR_SIZE-1) - (counter/2) : 'd0;
 
 	//done signals
     assign load_done = (load_flag) && (counter == 'd0);
@@ -248,13 +224,13 @@ module pe_con#(
     
     
     my_pe #(
-        .L_RAM_SIZE(L_RAM_SIZE)
+        .L_RAM_SIZE(R_RAM_SIZE)
     ) u_pe (
         .aclk(aclk),
         .aresetn(aresetn && (state != S_DONE)),
         .ain(ain),
         .din(din),
-        .addr(addr),
+        .addr(r_addr),
         .we(we_local),
         .valid(valid),
         .dvalid(dvalid),
