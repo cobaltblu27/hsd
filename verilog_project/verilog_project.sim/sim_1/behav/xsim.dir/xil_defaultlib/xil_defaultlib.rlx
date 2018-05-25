@@ -1,0 +1,12 @@
+0.6
+2016.4
+Jan 23 2017
+19:19:20
+/csehome/cobaltblu27/HSD/project/HSD_LAB8/hw_2/bram.v,1527244936,verilog,,,,my_bram,,,../../../verilog_project.srcs/sources_1/ip/clk_wiz_0,,,,,
+/csehome/cobaltblu27/HSD/project/HSD_LAB8/hw_2/pe.v,1527245538,verilog,,,,my_pe,,,../../../verilog_project.srcs/sources_1/ip/clk_wiz_0,,,,,
+/csehome/cobaltblu27/HSD/project/HSD_LAB8/hw_2/pe_controller.v,1527245525,verilog,,,,pe_con,,,../../../verilog_project.srcs/sources_1/ip/clk_wiz_0,,,,,
+/csehome/cobaltblu27/HSD/project/HSD_LAB8/hw_2/tb_pecon_bram.v,1527245492,verilog,,,,tb_pecon_bram,,,../../../verilog_project.srcs/sources_1/ip/clk_wiz_0,,,,,
+/csehome/cobaltblu27/HSD/project/verilog_project/verilog_project.sim/sim_1/behav/glbl.v,1485222234,verilog,,,,glbl,,,,,,,,
+/csehome/cobaltblu27/HSD/project/verilog_project/verilog_project.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.v,1527245411,verilog,,,,clk_wiz_0,,,../../../verilog_project.srcs/sources_1/ip/clk_wiz_0,,,,,
+/csehome/cobaltblu27/HSD/project/verilog_project/verilog_project.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0_clk_wiz.v,1527245411,verilog,,,,clk_wiz_0_clk_wiz,,,../../../verilog_project.srcs/sources_1/ip/clk_wiz_0,,,,,
+/csehome/cobaltblu27/HSD/project/verilog_project/verilog_project.srcs/sources_1/ip/floating_point_0/sim/floating_point_0.vhd,1527245371,vhdl,,,,floating_point_0,,,,,,,,

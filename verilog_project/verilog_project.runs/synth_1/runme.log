@@ -1,0 +1,418 @@
+
+*** Running vivado
+    with args -log pe_con.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source pe_con.tcl
+
+awk: symbol lookup error: awk: undefined symbol: mpfr_z_sub
+
+****** Vivado v2016.4 (64-bit)
+  **** SW Build 1756540 on Mon Jan 23 19:11:19 MST 2017
+  **** IP Build 1755317 on Mon Jan 23 20:30:07 MST 2017
+    ** Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
+
+source pe_con.tcl -notrace
+Command: synth_design -top pe_con -part xc7z020clg484-1
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7z020'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7z020'
+INFO: Launching helper process for spawning children vivado processes
+INFO: Helper process launched with PID 14380 
+awk: symbol lookup error: awk: undefined symbol: mpfr_z_sub
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 1072.352 ; gain = 139.086 ; free physical = 1188 ; free virtual = 12594
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'pe_con' [/csehome/cobaltblu27/HSD/project/HSD_LAB8/hw_2/pe_controller.v:3]
+	Parameter DATA_WIDTH bound to: 32 - type: integer 
+	Parameter VECTOR_SIZE bound to: 64 - type: integer 
+	Parameter L_RAM_SIZE bound to: 12 - type: integer 
+	Parameter R_RAM_SIZE bound to: 6 - type: integer 
+	Parameter S_IDLE bound to: 4'b0000 
+	Parameter S_LOAD bound to: 4'b0001 
+	Parameter S_CALC bound to: 4'b0010 
+	Parameter S_DONE bound to: 4'b0011 
+	Parameter CNTLOAD1 bound to: 8319 - type: integer 
+	Parameter CNTCALC1 bound to: 4095 - type: integer 
+	Parameter CNTDONE bound to: 63 - type: integer 
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/csehome/cobaltblu27/HSD/project/HSD_LAB8/hw_2/pe_controller.v:53]
+INFO: [Synth 8-638] synthesizing module 'clk_wiz_0' [/csehome/cobaltblu27/HSD/project/verilog_project/verilog_project.runs/synth_1/.Xil/Vivado-14325-310-2-28/realtime/clk_wiz_0_stub.v:5]
+INFO: [Synth 8-256] done synthesizing module 'clk_wiz_0' (1#1) [/csehome/cobaltblu27/HSD/project/verilog_project/verilog_project.runs/synth_1/.Xil/Vivado-14325-310-2-28/realtime/clk_wiz_0_stub.v:5]
+INFO: [Synth 8-638] synthesizing module 'my_pe' [/csehome/cobaltblu27/HSD/project/HSD_LAB8/hw_2/pe.v:1]
+	Parameter L_RAM_SIZE bound to: 6 - type: integer 
+INFO: [Synth 8-5534] Detected attribute (* ram_style = "block" *) [/csehome/cobaltblu27/HSD/project/HSD_LAB8/hw_2/pe.v:27]
+INFO: [Synth 8-638] synthesizing module 'floating_point_0' [/csehome/cobaltblu27/HSD/project/verilog_project/verilog_project.runs/synth_1/.Xil/Vivado-14325-310-2-28/realtime/floating_point_0_stub.v:6]
+INFO: [Synth 8-256] done synthesizing module 'floating_point_0' (2#1) [/csehome/cobaltblu27/HSD/project/verilog_project/verilog_project.runs/synth_1/.Xil/Vivado-14325-310-2-28/realtime/floating_point_0_stub.v:6]
+INFO: [Synth 8-256] done synthesizing module 'my_pe' (3#1) [/csehome/cobaltblu27/HSD/project/HSD_LAB8/hw_2/pe.v:1]
+INFO: [Synth 8-256] done synthesizing module 'pe_con' (4#1) [/csehome/cobaltblu27/HSD/project/HSD_LAB8/hw_2/pe_controller.v:3]
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 1112.820 ; gain = 179.555 ; free physical = 1145 ; free virtual = 12551
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 1112.820 ; gain = 179.555 ; free physical = 1145 ; free virtual = 12551
+---------------------------------------------------------------------------------
+WARNING: [Project 1-486] Could not resolve non-primitive black box cell 'clk_wiz_0' instantiated as 'u_clk' [/csehome/cobaltblu27/HSD/project/HSD_LAB8/hw_2/pe_controller.v:48]
+WARNING: [Project 1-486] Could not resolve non-primitive black box cell 'floating_point_0' instantiated as 'u_pe/u_float_dsp' [/csehome/cobaltblu27/HSD/project/HSD_LAB8/hw_2/pe.v:44]
+INFO: [Device 21-403] Loading part xc7z020clg484-1
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [/csehome/cobaltblu27/HSD/project/verilog_project/verilog_project.runs/synth_1/.Xil/Vivado-14325-310-2-28/dcp/floating_point_0_in_context.xdc] for cell 'u_pe/u_float_dsp'
+Finished Parsing XDC File [/csehome/cobaltblu27/HSD/project/verilog_project/verilog_project.runs/synth_1/.Xil/Vivado-14325-310-2-28/dcp/floating_point_0_in_context.xdc] for cell 'u_pe/u_float_dsp'
+Parsing XDC File [/csehome/cobaltblu27/HSD/project/verilog_project/verilog_project.runs/synth_1/.Xil/Vivado-14325-310-2-28/dcp_2/clk_wiz_0_in_context.xdc] for cell 'u_clk'
+Finished Parsing XDC File [/csehome/cobaltblu27/HSD/project/verilog_project/verilog_project.runs/synth_1/.Xil/Vivado-14325-310-2-28/dcp_2/clk_wiz_0_in_context.xdc] for cell 'u_clk'
+Completed Processing XDC Constraints
+
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00.01 . Memory (MB): peak = 1495.375 ; gain = 0.000 ; free physical = 959 ; free virtual = 12366
+WARNING: [Timing 38-316] Clock period '100.000' specified during out-of-context synthesis of instance 'u_pe/u_float_dsp' at clock pin 'aclk' is different from the actual clock period '20.000', this can lead to different synthesis results.
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:12 ; elapsed = 00:00:12 . Memory (MB): peak = 1495.375 ; gain = 562.109 ; free physical = 957 ; free virtual = 12364
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7z020clg484-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:12 ; elapsed = 00:00:12 . Memory (MB): peak = 1495.375 ; gain = 562.109 ; free physical = 957 ; free virtual = 12364
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+Applied set_property IO_BUFFER_TYPE = NONE for aclk. (constraint file  /csehome/cobaltblu27/HSD/project/verilog_project/verilog_project.runs/synth_1/.Xil/Vivado-14325-310-2-28/dcp_2/clk_wiz_0_in_context.xdc, line 3).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for aclk. (constraint file  /csehome/cobaltblu27/HSD/project/verilog_project/verilog_project.runs/synth_1/.Xil/Vivado-14325-310-2-28/dcp_2/clk_wiz_0_in_context.xdc, line 4).
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:12 ; elapsed = 00:00:12 . Memory (MB): peak = 1495.375 ; gain = 562.109 ; free physical = 957 ; free virtual = 12364
+---------------------------------------------------------------------------------
+INFO: [Synth 8-5544] ROM "state0" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "state0" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "state0" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "state0" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "state" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "ld_val" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:12 ; elapsed = 00:00:12 . Memory (MB): peak = 1495.375 ; gain = 562.109 ; free physical = 950 ; free virtual = 12356
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     32 Bit       Adders := 1     
+	   2 Input     13 Bit       Adders := 2     
+	   2 Input     12 Bit       Adders := 3     
+	   2 Input      6 Bit       Adders := 3     
++---Registers : 
+	               32 Bit    Registers := 2     
+	                6 Bit    Registers := 1     
+	                4 Bit    Registers := 2     
+	                1 Bit    Registers := 5     
++---RAMs : 
+	             128K Bit         RAMs := 1     
+	               2K Bit         RAMs := 2     
++---Muxes : 
+	   2 Input     32 Bit        Muxes := 8     
+	   2 Input     15 Bit        Muxes := 1     
+	   4 Input     15 Bit        Muxes := 1     
+	   2 Input     13 Bit        Muxes := 1     
+	   3 Input     13 Bit        Muxes := 1     
+	   2 Input      6 Bit        Muxes := 3     
+	   2 Input      3 Bit        Muxes := 1     
+	   2 Input      2 Bit        Muxes := 3     
+	   4 Input      2 Bit        Muxes := 1     
+	   2 Input      1 Bit        Muxes := 3     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Hierarchical Component Statistics 
+---------------------------------------------------------------------------------
+Hierarchical RTL Component report 
+Module pe_con 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     32 Bit       Adders := 1     
+	   2 Input     13 Bit       Adders := 2     
+	   2 Input     12 Bit       Adders := 3     
+	   2 Input      6 Bit       Adders := 3     
++---Registers : 
+	               32 Bit    Registers := 1     
+	                6 Bit    Registers := 1     
+	                4 Bit    Registers := 2     
+	                1 Bit    Registers := 5     
++---RAMs : 
+	             128K Bit         RAMs := 1     
+	               2K Bit         RAMs := 1     
++---Muxes : 
+	   2 Input     32 Bit        Muxes := 8     
+	   2 Input     15 Bit        Muxes := 1     
+	   4 Input     15 Bit        Muxes := 1     
+	   2 Input     13 Bit        Muxes := 1     
+	   3 Input     13 Bit        Muxes := 1     
+	   2 Input      6 Bit        Muxes := 3     
+	   2 Input      3 Bit        Muxes := 1     
+	   2 Input      2 Bit        Muxes := 3     
+	   4 Input      2 Bit        Muxes := 1     
+	   2 Input      1 Bit        Muxes := 3     
+Module my_pe 
+Detailed RTL Component Info : 
++---Registers : 
+	               32 Bit    Registers := 1     
++---RAMs : 
+	               2K Bit         RAMs := 1     
+---------------------------------------------------------------------------------
+Finished RTL Hierarchical Component Statistics
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 220 (col length:60)
+BRAMs: 280 (col length: RAMB18 60 RAMB36 30)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-3917] design pe_con has port BRAM_ADDR[31] driven by constant 0
+WARNING: [Synth 8-3917] design pe_con has port BRAM_ADDR[30] driven by constant 0
+WARNING: [Synth 8-3917] design pe_con has port BRAM_ADDR[29] driven by constant 0
+WARNING: [Synth 8-3917] design pe_con has port BRAM_ADDR[28] driven by constant 0
+WARNING: [Synth 8-3917] design pe_con has port BRAM_ADDR[27] driven by constant 0
+WARNING: [Synth 8-3917] design pe_con has port BRAM_ADDR[26] driven by constant 0
+WARNING: [Synth 8-3917] design pe_con has port BRAM_ADDR[25] driven by constant 0
+WARNING: [Synth 8-3917] design pe_con has port BRAM_ADDR[24] driven by constant 0
+WARNING: [Synth 8-3917] design pe_con has port BRAM_ADDR[23] driven by constant 0
+WARNING: [Synth 8-3917] design pe_con has port BRAM_ADDR[22] driven by constant 0
+WARNING: [Synth 8-3917] design pe_con has port BRAM_ADDR[21] driven by constant 0
+WARNING: [Synth 8-3917] design pe_con has port BRAM_ADDR[20] driven by constant 0
+WARNING: [Synth 8-3917] design pe_con has port BRAM_ADDR[19] driven by constant 0
+WARNING: [Synth 8-3917] design pe_con has port BRAM_ADDR[18] driven by constant 0
+WARNING: [Synth 8-3917] design pe_con has port BRAM_ADDR[17] driven by constant 0
+WARNING: [Synth 8-3917] design pe_con has port BRAM_ADDR[16] driven by constant 0
+WARNING: [Synth 8-3917] design pe_con has port BRAM_ADDR[15] driven by constant 0
+WARNING: [Synth 8-3917] design pe_con has port BRAM_ADDR[1] driven by constant 0
+WARNING: [Synth 8-3917] design pe_con has port BRAM_ADDR[0] driven by constant 0
+ERROR: [Synth 8-2914] Unsupported RAM template [/csehome/cobaltblu27/HSD/project/HSD_LAB8/hw_2/pe_controller.v:43]
+WARNING: [Synth 8-3463] Infeasible ramstyle = block set for RAM globalmem_reg,trying to implement using LUTRAM
+WARNING: [Synth 8-3463] Infeasible ramstyle = block set for RAM globalmem_reg,trying to implement using LUTRAM
+ERROR: [Synth 8-5743] Unable to infer RAMs due to unsupported pattern.
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\state_reg[3] )
+INFO: [Synth 8-3886] merging instance 'state_reg[2]' (FDR) to 'state_d_reg[3]'
+INFO: [Synth 8-3886] merging instance 'state_d_reg[3]' (FDR) to 'state_d_reg[2]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\state_d_reg[2] )
+WARNING: [Synth 8-3332] Sequential element (state_reg[3]) is unused and will be removed from module pe_con.
+WARNING: [Synth 8-3332] Sequential element (state_d_reg[2]) is unused and will be removed from module pe_con.
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:14 ; elapsed = 00:00:15 . Memory (MB): peak = 1495.375 ; gain = 562.109 ; free physical = 907 ; free virtual = 12313
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+
+Block RAM: Preliminary Mapping  Report (see note below)
++------------+------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|Module Name | RTL Object | PORT A (Depth x Width) | W | R | PORT B (Depth x Width) | W | R | Ports driving FF | RAMB18 | RAMB36 | 
++------------+------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|my_pe       | peram_reg  | 64 x 32                | W | R |                        |   |   | Port A           | 1      | 0      | 
++------------+------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+
+Note: The table above is a preliminary report that shows the Block RAMs at the current stage of the synthesis flow. Some Block RAMs may be reimplemented as non Block RAM primitives later in the synthesis flow. Multiple instantiated Block RAMs are reported only once. 
+
+Distributed RAM: Preliminary Mapping  Report (see note below)
++------------+---------------+-----------+----------------------+--------------------------------+
+|Module Name | RTL Object    | Inference | Size (Depth x Width) | Primitives                     | 
++------------+---------------+-----------+----------------------+--------------------------------+
+|pe_con      | globalmem_reg | Implied   | 4 K x 32             | RAM64X1D x 128  RAM64M x 640   | 
++------------+---------------+-----------+----------------------+--------------------------------+
+
+Note: The table above is a preliminary report that shows the Distributed RAMs at the current stage of the synthesis flow. Some Distributed RAMs may be reimplemented as non Distributed RAM primitives later in the synthesis flow. Multiple instantiated RAMs are reported only once.
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+INFO: [Synth 8-5578] Moved timing constraint from pin 'u_clk/clk_out1' to pin 'u_clk/bbstub_clk_out1/O'
+INFO: [Synth 8-5819] Moved 1 constraints on hierarchical pins to their respective driving/loading pins
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:20 ; elapsed = 00:00:20 . Memory (MB): peak = 1495.375 ; gain = 562.109 ; free physical = 876 ; free virtual = 12283
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:21 ; elapsed = 00:00:21 . Memory (MB): peak = 1495.375 ; gain = 562.109 ; free physical = 856 ; free virtual = 12263
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+INFO: [Synth 8-4480] The timing for the instance u_pe/peram_reg (implemented as a block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+INFO: [Synth 8-4480] The timing for the instance u_pe/peram_reg (implemented as a block RAM) might be sub-optimal as no optional output register could be merged into the block ram. Providing additional output register may help in improving timing.
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:22 ; elapsed = 00:00:22 . Memory (MB): peak = 1495.375 ; gain = 562.109 ; free physical = 834 ; free virtual = 12240
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:22 ; elapsed = 00:00:22 . Memory (MB): peak = 1495.375 ; gain = 562.109 ; free physical = 832 ; free virtual = 12238
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:22 ; elapsed = 00:00:22 . Memory (MB): peak = 1495.375 ; gain = 562.109 ; free physical = 832 ; free virtual = 12238
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:22 ; elapsed = 00:00:23 . Memory (MB): peak = 1495.375 ; gain = 562.109 ; free physical = 833 ; free virtual = 12239
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:23 ; elapsed = 00:00:23 . Memory (MB): peak = 1495.375 ; gain = 562.109 ; free physical = 832 ; free virtual = 12239
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:23 ; elapsed = 00:00:23 . Memory (MB): peak = 1495.375 ; gain = 562.109 ; free physical = 832 ; free virtual = 12239
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:23 ; elapsed = 00:00:23 . Memory (MB): peak = 1495.375 ; gain = 562.109 ; free physical = 832 ; free virtual = 12239
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++------+-----------------+----------+
+|      |BlackBox name    |Instances |
++------+-----------------+----------+
+|1     |clk_wiz_0        |         1|
+|2     |ram              |         1|
+|3     |floating_point_0 |         1|
++------+-----------------+----------+
+
+Report Cell Usage: 
++------+-----------------+------+
+|      |Cell             |Count |
++------+-----------------+------+
+|1     |clk_wiz_0        |     1|
+|2     |floating_point_0 |     1|
+|3     |ram              |     1|
+|4     |CARRY4           |    23|
+|5     |LUT1             |    89|
+|6     |LUT2             |   150|
+|7     |LUT3             |  1037|
+|8     |LUT4             |    44|
+|9     |LUT5             |    54|
+|10    |LUT6             |   155|
+|11    |MUXF7            |   512|
+|12    |MUXF8            |   256|
+|13    |RAM64M           |   640|
+|14    |RAM64X1D         |   128|
+|15    |RAMB18E1         |     1|
+|16    |FDRE             |    79|
+|17    |IBUF             |    34|
+|18    |OBUF             |    70|
++------+-----------------+------+
+
+Report Instance Areas: 
++------+---------+-------+------+
+|      |Instance |Module |Cells |
++------+---------+-------+------+
+|1     |top      |       |  3306|
+|2     |  u_pe   |my_pe  |  2006|
++------+---------+-------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:23 ; elapsed = 00:00:23 . Memory (MB): peak = 1495.375 ; gain = 562.109 ; free physical = 832 ; free virtual = 12239
+---------------------------------------------------------------------------------
+Synthesis finished with 2 errors, 0 critical warnings and 23 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:17 ; elapsed = 00:00:17 . Memory (MB): peak = 1495.375 ; gain = 99.465 ; free physical = 832 ; free virtual = 12238
+Synthesis Optimization Complete : Time (s): cpu = 00:00:23 ; elapsed = 00:00:23 . Memory (MB): peak = 1495.375 ; gain = 562.109 ; free physical = 832 ; free virtual = 12238
+INFO: [Project 1-571] Translating synthesized netlist
+INFO: [Netlist 29-17] Analyzing 826 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-140] Inserted 1 IBUFs to IO ports without IO buffers.
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 768 instances were transformed.
+  RAM64M => RAM64M (RAMD64E, RAMD64E, RAMD64E, RAMD64E): 640 instances
+  RAM64X1D => RAM64X1D (RAMD64E, RAMD64E): 128 instances
+
+INFO: [Common 17-83] Releasing license: Synthesis
+38 Infos, 26 Warnings, 0 Critical Warnings and 2 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:23 ; elapsed = 00:00:23 . Memory (MB): peak = 1518.953 ; gain = 518.184 ; free physical = 833 ; free virtual = 12240
+ERROR: [Common 17-39] 'synth_design' failed due to earlier errors.
+
+    while executing
+"synth_design -top pe_con -part xc7z020clg484-1"
+    (file "pe_con.tcl" line 33)
+INFO: [Common 17-206] Exiting Vivado at Fri May 25 20:13:56 2018...
