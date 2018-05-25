@@ -9,6 +9,7 @@ module my_pe #(
         input [31:0] ain,        
         // peram -> port B 
         input [31:0] din,
+        input [31:0] cin,
         input [L_RAM_SIZE-1:0]  addr,
         input we,        
         // integrated valid signal
@@ -17,7 +18,7 @@ module my_pe #(
         output dvalid,
         output [31:0] dout
     );
-
+    
     wire avalid = valid;
     wire bvalid = valid;
     wire cvalid = valid;
@@ -49,7 +50,7 @@ module my_pe #(
             .s_axis_b_tdata   (bin),
             .s_axis_c_tvalid  (cvalid),
             //.s_axis_c_tdata   (sreg[FLOATDELAY-1]),
-            .s_axis_c_tdata   (dout_fb),
+            .s_axis_c_tdata   (cin),
             .m_axis_result_tvalid (dvalid),
             .m_axis_result_tdata  (dout)
        );

@@ -39,7 +39,8 @@ module pe_con#(
     reg [31:0] wrdata;
     reg [DATA_WIDTH-1:0] input_reg;
     
-    reg [31:0] result_vec [6:0]; //reg that we'll use to store result value
+    reg [31:0] counter;
+    reg [31:0] result_vec [0:VECTOR_SIZE-1]; //reg that we'll use to store result value
     //wire start;
     
     wire [L_RAM_SIZE-1:0] l_addr; // address of L_RAM
@@ -56,7 +57,13 @@ module pe_con#(
             globalmem[l_addr] <= rddata;
         else
             gdout <= globalmem[l_addr];
-
+    
+    always @(posedge aclk)
+        if (we_local)
+            result_vec[r_addr] <= 'd0;
+        else 
+            result_vec[r_addr] <= result_vec[r_addr];        
+    
   
 	//FSM
     // transition triggering flags
@@ -110,9 +117,10 @@ module pe_con#(
         if (load_flag_reset)
             load_flag <= 'd0;
         else
-            if (load_flag_en)
+            if (load_flag_en) begin
                 load_flag <= 'd1;
-            else
+            end
+            else 
                 load_flag <= load_flag;
     
     // S_CALC
@@ -126,61 +134,48 @@ module pe_con#(
     reg calc_flag;
     wire calc_flag_reset = !aresetn || calc_done;
     wire calc_flag_en = (state_d == S_LOAD) && (state == S_CALC);
+    localparam CNTCALC1 = (VECTOR_SIZE)*(VECTOR_SIZE) - 1;
     
-   
-    reg [12:0] calc_cnt; // 0 to 64^2-1
     wire [12:0] transpose_index; //converts to index for iterating column by column
+    wire [12:0] calc_cnt;
+    assign calc_cnt = CNTCALC1 - counter;
     assign transpose_index = {1'b0, calc_cnt[5:0], calc_cnt[11:6]};
-    wire [3:0] vec_addr;
-    // for every calc_cnt value, vec_addr will point to vector element that needs to be multiplied
-    assign vec_addr = calc_cnt[7:4];
     
     wire mult_result_valid;
-    reg [31:0] calc_out;//output value from floating mult
     
-    localparam CNTCALC1 = (VECTOR_SIZE) - 1;
     always @(posedge aclk) begin //for multiplecation
         if (calc_flag_reset) begin
             calc_flag <= 'd0;
-            calc_cnt <= 'd0;
         end
         else begin
-            if (calc_flag_en) begin
-                calc_flag <= 'd1;
-                calc_cnt <= calc_cnt + 1; 
+            if (calc_flag_en) begin 
+                calc_flag <= 'd1; 
             end
             else begin
                 calc_flag <= calc_flag;
-                calc_cnt <= calc_cnt;
             end
         end
     end
-    
+
     reg[31:0] prev_val;
-    reg[5:0] result_vector_index;
-    always @(negedge aclk) begin //when multiplecation output is valid, start adding to result vector
-        if(mult_result_valid) begin
-            if(prev_val != calc_out) begin
+    reg[5:0] write_back_index;
+    wire [5:0] result_vector_index;
+    assign result_vector_index = calc_cnt[5:0];
+    always @(posedge aclk) begin //when addition output is valid, start writing back to result vector
+        if(dvalid) begin
+            if(prev_val != dout) begin
                 //assign calc_out to flt_add input
-                prev_val = calc_out;
-                result_vector_index = result_vector_index+1;// if goes over 63, will return to 0(which is index we need)
+                result_vec[write_back_index] = dout;
+                write_back_index = 1 + write_back_index;
+                prev_val = dout;
             end else begin
-                
+                write_back_index = 'd0;
                 prev_val = prev_val;
             end
         end else begin
             //do nothing
-            result_vector_index = 7'b0;
+            write_back_index = 'd0;
             prev_val = 31'b0;
-        end
-    end
-    
-    wire add_result_valid;
-    always @(negedge aclk) begin //when addition output is valid, start writing back to result vector
-        if(add_result_valid) begin
-        
-        end else begin
-        
         end
     end
     
@@ -188,24 +183,23 @@ module pe_con#(
     reg done_flag;
     wire done_flag_reset = !aresetn || done_done;
     wire done_flag_en = (state_d == S_CALC) && (state == S_DONE);
-    localparam CNTDONE = 5;
+    localparam CNTDONE = VECTOR_SIZE - 1;
     always @(posedge aclk)
         if (done_flag_reset)
             done_flag <= 'd0;
-        else
+        else begin
             if (done_flag_en)
                 done_flag <= 'd1;
             else
                 done_flag <= done_flag;
-    
+        end
     
     // down counter
-    reg [31:0] counter;
     wire [31:0] ld_val = (load_flag_en)? CNTLOAD1 :
                          (calc_flag_en)? CNTCALC1 : 
                          (done_flag_en)? CNTDONE  : 'd0;
     wire counter_ld = load_flag_en || calc_flag_en || done_flag_en;
-    wire counter_en = load_flag || dvalid || done_flag;
+    wire counter_en = load_flag || calc_flag || dvalid || done_flag;
     wire counter_reset = !aresetn || load_done || calc_done || done_done;
     always @(posedge aclk)
         if (counter_reset)
@@ -255,15 +249,15 @@ module pe_con#(
     assign valid = (calc_flag) && valid_reg;
     
 	//S_CALC: ain
-	assign ain = (calc_flag)? gdout : 'd0;
+	assign ain = (calc_flag)? globalmem[transpose_index] : 'd0;
 
 	//S_LOAD : get r_addr and l_addr
     // r_addr => S_LOAD : 63 - (counter / 2)
     wire r_addr_valid;
     wire l_addr_valid;
     
-    assign r_addr = (load_flag)? ((counter < VECTOR_SIZE*2)? (VECTOR_SIZE-1) - (counter/2) : 'd0):
-                    (calc_flag)? counter[L_RAM_SIZE-1:0]: 'd0;                                              //TODO
+    assign r_addr = (load_flag)? ((counter < VECTOR_SIZE*2)? (VECTOR_SIZE-1) - (counter/2) : 'd0)
+                       : (calc_flag)? calc_cnt[11:6] : 'd0;                                        
     
     // l_addr => S_LOAD : 4159 - (counter / 2)
     assign l_addr = (load_flag)? (VECTOR_SIZE*VECTOR_SIZE+VECTOR_SIZE-1) - (counter/2) :
@@ -272,7 +266,8 @@ module pe_con#(
 	//S_LOAD
 	assign din = (load_flag)? rddata : 'd0;
     // rdaddr = 4159 - (counter / 2)
-    assign rdaddr = (state == S_LOAD)? (VECTOR_SIZE*VECTOR_SIZE+VECTOR_SIZE-1) - (counter/2) : 'd0;         //TODO
+    assign rdaddr = (state == S_DONE)? VECTOR_SIZE - 1 - counter 
+                : (state == S_LOAD)? (VECTOR_SIZE*VECTOR_SIZE+VECTOR_SIZE-1) - (counter/2) : 'd0; 
     //S_CALC
     
     
@@ -285,50 +280,10 @@ module pe_con#(
     
     // BRAM interface
     assign rddata = BRAM_RDDATA;
-    assign BRAM_WRDATA = wrdata;
+    assign BRAM_WRDATA = (done_flag)? result_vec[VECTOR_SIZE - 1 - counter] : 'd0;
     
-    assign BRAM_ADDR = (done_flag_en)? 0 : { {29-L_RAM_SIZE{1'b0}}, rdaddr, 2'b00};
-    assign BRAM_WE = (done_flag_en)? 4'hF : 0;
-    
-//    wire [31:0] accumulate_in;
-//    assign accumulate_in = (calc_cnt[3:0] != 4'b0)? calc_out : 32'b0;
-//    floating_point_1 my_flt(
-//            .aclk(aclk),
-//            .aresetn(aresetn),
-//            .a_axis_a_tvalid(),
-//            .a_axis_b_tvalid(),
-//            .a_axis_c_tvalid(1'b1),
-//            .s_axis_a_tdata(),
-//            .s_axis_b_tdata(),
-//            .s_axis_c_tdata('d0),
-//            .m_axis_result_tvalid(mult_result_valid),
-//            .m_axis_result_tdata(calc_out)
-//        );
-    
-//        floating_point_2 flt_add(
-//            .aclk(aclk),
-//            .aresetn(aresetn),
-//            .a_axis_a_tvalid(),
-//            .a_axis_b_tvalid(),
-//            .s_axis_a_tdata(),
-//            .s_axis_b_tdata(),
-//            .m_axis_result_tvalid(add_result_valid),
-//            .m_axis_result_tdata(calc_out)
-//        );
-    
-    my_pe #(
-        .L_RAM_SIZE(L_RAM_SIZE)
-    ) matrix_pe(
-        .aclk(aclk),
-        .aresetn(aresetn && (state != S_DONE)),
-        .ain(ain),
-        .din(din),
-        .addr(l_addr),
-        .we(we_local),
-        .valid(valid),
-        .dvalid(dvalid),
-        .dout(dout)
-    );
+    assign BRAM_ADDR = (done_flag_en)? 0 : { {29-L_RAM_SIZE{1'b0}}, rdaddr, 2'b00}; //TODO
+    assign BRAM_WE = (done_flag)? 4'hF : 0;
     
     my_pe #(
         .L_RAM_SIZE(R_RAM_SIZE)
@@ -337,6 +292,7 @@ module pe_con#(
         .aresetn(aresetn && (state != S_DONE)),
         .ain(ain),
         .din(din),
+        .cin(result_vec[result_vector_index]),
         .addr(r_addr),
         .we(we_local),
         .valid(valid),
