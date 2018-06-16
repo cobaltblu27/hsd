@@ -57,8 +57,10 @@ module pe_con#(
     (* ram_style = "block" *) reg [31:0] globalmem [0:VECTOR_SIZE*VECTOR_SIZE-1]; // since we store entire 64*64 matrix on
                                                                                   // L_RAM, size should be like this!
     always @(posedge aclk)
-        if (we_global)
-            globalmem[l_addr] <= rddata;
+        if (we_global) begin
+            globalmem[l_addr] <= {16'b0, rddata[31:16]};
+            globalmem[l_addr + VECTOR_SIZE*VECTOR_SIZE/2] <= {16'b0, rddata[15:0]};//TODO
+        end
         else
             gdout <= globalmem[l_addr];
       
@@ -111,7 +113,7 @@ module pe_con#(
     wire load_flag_en = (state_d == S_IDLE) && (state == S_LOAD);
     // CNTLOAD1 : We need to count until 64*64+64 vals are all loaded onto local RAMs. 
     // We multiply 2, 1 cycle for reading val from BRAM and the other for writing the val to RAM.
-    localparam CNTLOAD1 = (VECTOR_SIZE * VECTOR_SIZE + VECTOR_SIZE) * 2 - 1; 
+    localparam CNTLOAD1 = (VECTOR_SIZE * VECTOR_SIZE + VECTOR_SIZE) - 1; 
     always @(posedge aclk)
         if (load_flag_reset)
             load_flag <= 'd0;
@@ -231,11 +233,9 @@ module pe_con#(
     //S_LOAD: we
     
     // we_local : we have to start writing vals to R_RAMs when there are only 64 vals left to copy
-    wire we_local2;
-    assign we_local = (load_flag && (counter < VECTOR_SIZE * 2 && counter >= VECTOR_SIZE) && !counter[0]) ? 'd1 : 'd0;
-    assign we_local2 = (load_flag && (counter < VECTOR_SIZE) && !counter[0]) ? 'd1 : 'd0;     
+    assign we_global = (load_flag && counter < VECTOR_SIZE*VECTOR_SIZE && !counter[0]) ? 'd1 : 'd0;
     // we_global : we have to continue writing vals to L_RAM until only 64 vals left to copy
-    assign we_global = (load_flag && (counter >= VECTOR_SIZE * 2) && !counter[0]) ? 'd1 : 'd0;
+    assign we_local = (load_flag && counter >= VECTOR_SIZE*VECTOR_SIZE && !counter[0]) ? 'd1 : 'd0;
      
     //S_CALC: wrdata 
    /*always @(posedge aclk)
@@ -279,19 +279,19 @@ module pe_con#(
     assign calc_plus_1 = calc_cnt + 1;
     assign calc_minus_1 = calc_cnt == 0 ? 0 : calc_cnt - 1;
     assign result_vector_index = calc_minus_1[5:0];
-    assign r_addr = (load_flag)? ((counter < VECTOR_SIZE*2)? ((counter >= VECTOR_SIZE) ? (VECTOR_SIZE-1) - (counter/2):(VECTOR_SIZE-1)-(counter/2+'d32)) : 'd0)
+    assign r_addr = (load_flag)? ((counter >= VECTOR_SIZE*VECTOR_SIZE)? (VECTOR_SIZE*VECTOR_SIZE+VECTOR_SIZE-2)/2 - (counter/2) : 'd0)
                        : (calc_flag)? calc_plus_1[11:6] : 'd0;
                    
     // l_addr => S_LOAD : 4159 - (counter / 2)
-    assign l_addr = (load_flag)? (VECTOR_SIZE*VECTOR_SIZE+VECTOR_SIZE-1) - (counter/2) :
+    assign l_addr = (load_flag)? (VECTOR_SIZE*VECTOR_SIZE-1)/2 - (counter/2) :
                      'd0; 
  
     //S_LOAD
-        assign din = (load_flag && counter >= VECTOR_SIZE)? rddata : 'd0;
-        assign din2 = (load_flag && counter < VECTOR_SIZE)? rddata : 'd0;
+        assign din = (load_flag && counter >= VECTOR_SIZE*VECTOR_SIZE)? {16'b0, rddata[31:16]} : 'd0;
+        assign din2 = (load_flag && counter >= VECTOR_SIZE*VECTOR_SIZE)? {16'b0, rddata[15:0]} : 'd0;
     // rdaddr = 4159 - (counter / 2)
     assign rdaddr = (state == S_DONE)? (VECTOR_SIZE*VECTOR_SIZE+VECTOR_SIZE) + VECTOR_SIZE - counter 
-                : (state == S_LOAD)? (VECTOR_SIZE*VECTOR_SIZE+VECTOR_SIZE-1) - (counter/2) : 'd0; 
+                : (state == S_LOAD)? (VECTOR_SIZE*VECTOR_SIZE+VECTOR_SIZE-1)/2 - (counter/2) : 'd0; 
     //S_CALC
     
     
@@ -341,7 +341,7 @@ module pe_con#(
             .din(din2),
             .cin(result_vec2[result_vector_index]),
             .addr(r_addr),
-            .we(we_local2),
+            .we(we_local),
             .valid(valid),
             .dvalid(dvalid),
             .dout(dout2)

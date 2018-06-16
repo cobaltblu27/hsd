@@ -59,7 +59,7 @@ module tb_pecon_bram();
     
     my_bram #(
         .BRAM_ADDR_WIDTH(BRAM_ADDR_WIDTH),
-        .INIT_FILE("/csehome/cobaltblu27/HSD/fixedpoint/input.txt"),
+        .INIT_FILE("/csehome/cobaltblu27/HSD/fixedpoint/input_merge.txt"),
         .OUT_FILE("output.txt")
     ) u_mem (
         .BRAM_ADDR(BRAM_ADDR[BRAM_ADDR_WIDTH-1:0]),
