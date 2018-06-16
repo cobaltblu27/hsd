@@ -4,7 +4,7 @@ int main(){
     float matrix[64][64];
     float vector[64];
     float answer[64];
-    FILE *f = fopen("./input_hex.txt", "r");
+    FILE *f = fopen("./input.txt", "r");
     for(int i = 0; i < 64; i++)
         for(int j = 0; j < 64; j++)
             fscanf(f, "%x", (unsigned int*) &(matrix[i][j]));
