@@ -24,7 +24,7 @@ module my_pe #(
     wire cvalid = valid;
     // peram: PE's local RAM -> Port B
     reg [31:0] bin;
-    (* ram_style = "block" *) reg [31:0] peram [0:2**L_RAM_SIZE - 1];
+    reg [31:0] peram [0:2**L_RAM_SIZE - 1];
     always @(posedge aclk)
         if (we)
             peram[addr] <= din;

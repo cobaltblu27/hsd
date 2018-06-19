@@ -79,7 +79,7 @@ module pe_con#(
     localparam S_CALC = 4'd2;
     localparam S_DONE = 4'd3;
  
-    //assign start = (input_reg == 'h5555);
+    assign start = (input_reg == 'h5555);
  
     //part 1: state transition
     always @(posedge aclk)
